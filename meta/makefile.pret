@@ -1,0 +1,9 @@
+# This file provides instructions for packaging.
+
+`Throwable-Factory`
+	perl_version_from m`Throwable::Factory`;
+	version_from      m`Throwable::Factory`;
+	readme_from       m`Throwable::Factory`;
+	test_requires     p`Test::More 0.61` ;
+	.
+
