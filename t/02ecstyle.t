@@ -1,3 +1,20 @@
+=head1 PURPOSE
+
+Exception::Class-like hashref factory.
+
+=head1 AUTHOR
+
+Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
+
+=head1 COPYRIGHT AND LICENCE
+
+This software is copyright (c) 2012 by Toby Inkster.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
 use strict;
 use warnings;
 use Test::More;
@@ -36,6 +53,7 @@ catch {
 	isa_ok $e, Except2;
 	isa_ok $e, Except1;
 	is($e->error, 'Test');
+	is($e->description, 'Extended version of Except1');
 };
 
 done_testing;

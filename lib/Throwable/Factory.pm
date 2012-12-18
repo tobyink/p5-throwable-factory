@@ -12,9 +12,10 @@ use Throwable::Error 0.200000 ();
 	our $VERSION   = '0.001';
 
 	use MooX::Struct -retain,
-		BaseClass => [
-			-class  => \'Throwable::Factory::Struct',
-			-with   => ['Throwable', 'StackTrace::Auto'],
+		Base => [
+			-class   => \'Throwable::Factory::Struct',
+			-extends => ['Throwable::Factory::Base'],
+			-with    => ['Throwable', 'StackTrace::Auto'],
 			'$message',
 		],
 	;
@@ -26,25 +27,29 @@ use Throwable::Error 0.200000 ();
 		goto \&MooX::Struct::import;
 	}
 	
-	BaseClass;
+	Base;
 }
 
 {
-	package Throwable::Factory::Struct;
+	package Throwable::Factory::Base;
 	our $AUTHORITY = 'cpan:TOBYINK';
 	our $VERSION   = '0.001';
 	
 	use Data::Dumper ();
+	use Moo;
+	use namespace::sweep 0.006;
+	extends 'MooX::Struct';
 	
-	# Aliases
-	sub error    { shift->message }
-	sub package  { shift->stack_trace->frame(0)->package }
-	sub file     { shift->stack_trace->frame(0)->filename }
-	sub line     { shift->stack_trace->frame(0)->line }
+	sub description { 'Generic exception' }
+	sub error       { shift->message }
+	sub package     { shift->stack_trace->frame(0)->package }
+	sub file        { shift->stack_trace->frame(0)->filename }
+	sub line        { shift->stack_trace->frame(0)->line }
 	
 	sub BUILDARGS
 	{
 		my $class = shift;
+		return +{} unless @_;
 		unshift @_, 'message' if @_ % 2 and not ref $_[0];
 		$class->SUPER::BUILDARGS(@_) if @_;
 	}
@@ -87,7 +92,7 @@ use Throwable::Error 0.200000 ();
 	extends 'MooX::Struct::Processor';
 	
 	has '+base' => (
-		default => sub { Throwable::Factory::BaseClass },
+		default => sub { Throwable::Factory::Base },
 	);
 
 	# Kinda ugly hack. MooX::Struct can't cope with inheriting
@@ -98,7 +103,7 @@ use Throwable::Error 0.200000 ();
 		if ($name eq 'FIELDS')
 		{
 			my @FIELDS = $coderef->();
-			unshift @FIELDS, 'message' unless $FIELDS[0] eq 'message';
+			unshift @FIELDS, 'message' unless @FIELDS && $FIELDS[0] eq 'message';
 			$coderef = sub { @FIELDS };
 		}
 		return $self->SUPER::process_method($klass, $name, $coderef);
@@ -148,7 +153,7 @@ Throwable::Factory - a module that does something-or-other
 =head1 SYNOPSIS
 
 	use Throwable::Factory
-		GeneralException => [],
+		GeneralException => undef,
 		FileException    => [qw( $filename )],
 		NetworkException => [qw( $remote_addr $remote_port )],
 	;
