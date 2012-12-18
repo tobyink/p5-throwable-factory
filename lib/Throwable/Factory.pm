@@ -37,7 +37,7 @@ use Throwable::Error 0.200000 ();
 	
 	use Data::Dumper ();
 	use Moo;
-	use namespace::sweep 0.006;
+	use namespace::clean;
 	extends 'MooX::Struct';
 	
 	sub description { 'Generic exception' }
@@ -88,7 +88,7 @@ use Throwable::Error 0.200000 ();
 	
 	use Moo;
 	use Carp;
-	use namespace::sweep 0.006;
+	use namespace::clean;
 	extends 'MooX::Struct::Processor';
 	
 	has '+base' => (
