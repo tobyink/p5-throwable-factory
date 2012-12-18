@@ -4,3 +4,9 @@
 	issued  2012-12-18;
 	label   "Developer preview".
 
+`Throwable-Factory 0.000_02 cpan:TOBYINK`
+	issued  2012-12-18;
+	changeset [
+		item "Use namespace::clean instead of namespace::sweep."^^Change;
+	].
+
