@@ -1,20 +1,32 @@
 use 5.008;
 use strict;
 use warnings;
+
+use Moo 1.000006 ();
 use MooX::Struct 0.008 ();
+use Throwable::Error 0.200000 ();
 
 {
 	package Throwable::Factory;
 	our $AUTHORITY = 'cpan:TOBYINK';
 	our $VERSION   = '0.001';
+
+	use MooX::Struct -retain,
+		BaseClass => [
+			-class  => \'Throwable::Factory::Struct',
+			-with   => ['Throwable', 'StackTrace::Auto'],
+			'$message',
+		],
+	;
 	
 	sub import
 	{
 		my $class  = shift() . '::Struct';
-		my $import = $class->can('import');
 		unshift @_, $class;
-		goto $import;
+		goto \&MooX::Struct::import;
 	}
+	
+	BaseClass;
 }
 
 {
@@ -22,22 +34,39 @@ use MooX::Struct 0.008 ();
 	our $AUTHORITY = 'cpan:TOBYINK';
 	our $VERSION   = '0.001';
 	
-	use Moo;
-	use namespace::sweep 0.006;
-	extends('MooX::Struct', 'Throwable::Error');
+	use Data::Dumper ();
 	
 	sub BUILDARGS
 	{
 		my $class = shift;
-		unshift @_, 'message' if @_ % 2 && !ref($_[0]);
-		return $class->SUPER::BUILDARGS(@_);
+		unshift @_, 'message' if @_ % 2 and not ref $_[0];
+		$class->SUPER::BUILDARGS(@_) if @_;
 	}
 	
 	sub TO_STRING
 	{
-		use Data::Dumper;
-		warn Dumper \@_;
-		Throwable::Error::as_string(@_);
+		local $Data::Dumper::Terse = 1;
+		local $Data::Dumper::Indent = 0;
+		local $Data::Dumper::Useqq = 1;
+		local $Data::Dumper::Deparse = 0;
+		local $Data::Dumper::Quotekeys = 0;
+		local $Data::Dumper::Sortkeys = 1;
+
+		my $self = shift;
+		my $str  = $self->message . "\n\n";
+		
+		for my $f ($self->FIELDS) {
+			next if $f eq 'message';
+			my $v = $self->$f;
+			$str .= sprintf(
+				"%-8s = %s\n",
+				$f,
+				ref($v) ? Data::Dumper::Dumper($v) : $v,
+			);
+		}
+		$str .= "\n";
+		$str .= $self->stack_trace->as_string;
+		return $str;
 	}
 }
 
@@ -51,20 +80,21 @@ use MooX::Struct 0.008 ();
 	extends 'MooX::Struct::Processor';
 	
 	has '+base' => (
-		default => sub { 'Throwable::Factory::Struct' },
+		default => sub { Throwable::Factory::BaseClass },
 	);
-	
-	# kinda ugly hack
-	around process_method => sub
+
+	# Kinda ugly hack. MooX::Struct can't cope with inheriting
+	# fields from the default base class.
+	sub process_method
 	{
-		my ($orig, $self, $klass, $name, $coderef) = @_;
+		my ($self, $klass, $name, $coderef) = @_;
 		if ($name eq 'FIELDS') {
 			my @FIELDS = $coderef->();
-			unshift @FIELDS, 'message';
+			unshift @FIELDS, 'message' unless $FIELDS[0] eq 'message';
 			$coderef = sub { @FIELDS };
 		}
-		return $self->$orig($klass, $name, $coderef);
-	};
+		return $self->SUPER::process_method($klass, $name, $coderef);
+	}
 }
 
 1;
