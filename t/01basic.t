@@ -24,6 +24,9 @@ catch {
 	is_deeply($e->bar, [qw( Hello world )]);
 	is_deeply($e->baz, { Hello => 'World' });
 	like("$e", qr{^Test exception});
+	is($e->package, __PACKAGE__);
+	is($e->file, __FILE__);
+	is($e->line, 10);
 };
 
 done_testing();

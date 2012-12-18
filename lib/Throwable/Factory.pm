@@ -36,6 +36,12 @@ use Throwable::Error 0.200000 ();
 	
 	use Data::Dumper ();
 	
+	# Aliases
+	sub error    { shift->message }
+	sub package  { shift->stack_trace->frame(0)->package }
+	sub file     { shift->stack_trace->frame(0)->filename }
+	sub line     { shift->stack_trace->frame(0)->line }
+	
 	sub BUILDARGS
 	{
 		my $class = shift;
@@ -76,6 +82,7 @@ use Throwable::Error 0.200000 ();
 	our $VERSION   = '0.001';
 	
 	use Moo;
+	use Carp;
 	use namespace::sweep 0.006;
 	extends 'MooX::Struct::Processor';
 	
@@ -88,12 +95,45 @@ use Throwable::Error 0.200000 ();
 	sub process_method
 	{
 		my ($self, $klass, $name, $coderef) = @_;
-		if ($name eq 'FIELDS') {
+		if ($name eq 'FIELDS')
+		{
 			my @FIELDS = $coderef->();
 			unshift @FIELDS, 'message' unless $FIELDS[0] eq 'message';
 			$coderef = sub { @FIELDS };
 		}
 		return $self->SUPER::process_method($klass, $name, $coderef);
+	}
+	
+	# Allow make_sub to accept Exception::Class-like hashrefs.
+	sub make_sub
+	{
+		my ($self, $name, $proto) = @_;
+		if (ref $proto eq 'HASH')
+		{
+			my %proto = %$proto;
+			$proto = [];
+			
+			if (defined $proto{isa}) {
+				my $isa = delete $proto{isa};
+				push @$proto, -extends => [$isa];
+			}
+			if (defined $proto{description}) {
+				my $desc = delete $proto{description};
+				push @$proto, description => sub { $desc };
+			}
+			if (defined $proto{fields}) {
+				my $fields = delete $proto{fields};
+				push @$proto, ref $fields ? @$fields : $fields;
+			}
+			
+			if (keys %proto) {
+				croak sprintf(
+					"Exception::Class-style %s option not supported",
+					join('/', sort keys %proto),
+				);
+			}
+		}
+		return $self->SUPER::make_sub($name, $proto);
 	}
 }
 
@@ -135,8 +175,53 @@ Throwable::Factory - a module that does something-or-other
 
 =head1 DESCRIPTION
 
-L<Exception::Class>-like exception factory using L<Throwable::Error> and
-L<MooX::Struct>.
+C<Throwable::Factory> is an L<Exception::Class>-like exception factory
+using L<MooX::Struct>.
+
+All exception classes built using C<Throwable::Factory> are L<MooX::Struct>
+structs, but will automatically include a C<message> attribute, will compose
+the L<Throwable> and L<StackTrace::Auto> roles, and contain the following
+convenience methods:
+
+=over
+
+=item C<error>
+
+Read-only alias for the C<message> attribute/field.
+
+=item C<package>
+
+Get the package for the first frame on the stack trace.
+
+=item C<file>
+
+Get the file name for the first frame on the stack trace.
+
+=item C<line>
+
+Get the line number for the first frame on the stack trace.
+
+=back
+
+They provide a C<BUILDARGS> method which means that if their constructor
+is called with an odd number of arguments, the first is taken to be the
+message, and the rest named parameters.
+
+Additionally, the factory can be called with Exception::Class-like hashrefs
+to describe the exception classes. The following two definitions are
+equivalent:
+
+	# MooX::Struct-style
+	use Throwable::Factory FooBar => [
+		-extends => ['Foo'],
+		qw( foo bar ),
+	];
+	
+	# Exception::Class-style
+	use Throwable::Factory FooBar => {
+		isa    => 'Foo',
+		fields => [qw( foo bar )],
+	};
 
 =head1 BUGS
 
@@ -145,8 +230,13 @@ L<http://rt.cpan.org/Dist/Display.html?Queue=Throwable-Factory>.
 
 =head1 SEE ALSO
 
-Exceptions built by this factory inherit from:
-L<Throwable::Error>, L<MooX::Struct>.
+Exceptions built by this factory inherit from L<MooX::Struct> and compose
+the L<Throwable> and L<StackTrace::Auto> roles.
+
+This factory is inspired by L<Exception::Class>, and for simple uses should
+be roughly compatible.
+
+Use L<Try::Tiny> or L<TryCatch> if you need a try/catch mechanism.
 
 =head1 AUTHOR
 
