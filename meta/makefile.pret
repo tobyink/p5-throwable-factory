@@ -9,7 +9,6 @@
 	requires p`Throwable::Error 0.200000`;
 	requires p`namespace::sweep 0.006`;
 	test_requires p`Test::More 0.88`;
-	test_requires p`Throwable::Factory 0`;
 	test_requires p`Try::Tiny 0`;
-	.
+.
 
