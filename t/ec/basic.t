@@ -1,25 +1,3 @@
-=head1 PURPOSE
-
-This is a slightly modified version of Dave Rolsky's C<< t/basic.t >>
-from L<Exception::Class>.
-
-It should demonstrate a fair degree of compatibility between
-L<Throwable::Factory> and L<Exception::Class>.
-
-=head1 AUTHOR
-
-Dave Rolsky E<lt>autarch@urth.orgE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is Copyright (c) 2010 by Dave Rolsky.
-
-This is free software, licensed under:
-
-	The Artistic License 2.0 (GPL Compatible)
-
-=cut
-
 use strict;
 use warnings;
 
@@ -515,3 +493,26 @@ sub bork2 {
 
     ObjectRefs2->throw('kaboom');
 }
+
+=head1 PURPOSE
+
+This is a slightly modified version of Dave Rolsky's C<< t/basic.t >>
+from L<Exception::Class>.
+
+It should demonstrate a fair degree of compatibility between
+L<Throwable::Factory> and L<Exception::Class>.
+
+=head1 AUTHOR
+
+Dave Rolsky E<lt>autarch@urth.orgE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2010 by Dave Rolsky.
+
+This is free software, licensed under:
+
+	The Artistic License 2.0 (GPL Compatible)
+
+=cut
+
