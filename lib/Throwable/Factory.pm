@@ -3,13 +3,13 @@ use strict;
 use warnings;
 
 use Moo 1.000006 ();
-use MooX::Struct 0.008 ();
+use MooX::Struct 0.009 ();
 use Throwable::Error 0.200000 ();
 
 {
 	package Throwable::Factory;
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.000_02';
+	our $VERSION   = '0.000_03';
 
 	use MooX::Struct -retain,
 		Base => [
@@ -33,7 +33,7 @@ use Throwable::Error 0.200000 ();
 {
 	package Throwable::Factory::Base;
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.000_02';
+	our $VERSION   = '0.000_03';
 	
 	use Data::Dumper ();
 	use Moo;
@@ -84,7 +84,7 @@ use Throwable::Error 0.200000 ();
 {
 	package Throwable::Factory::Struct::Processor;
 	our $AUTHORITY = 'cpan:TOBYINK';
-	our $VERSION   = '0.000_02';
+	our $VERSION   = '0.000_03';
 	
 	use Moo;
 	use Carp;
@@ -94,20 +94,6 @@ use Throwable::Error 0.200000 ();
 	has '+base' => (
 		default => sub { Throwable::Factory::Base },
 	);
-
-	# Kinda ugly hack. MooX::Struct can't cope with inheriting
-	# fields from the default base class.
-	sub process_method
-	{
-		my ($self, $klass, $name, $coderef) = @_;
-		if ($name eq 'FIELDS')
-		{
-			my @FIELDS = $coderef->();
-			unshift @FIELDS, 'message' unless @FIELDS && $FIELDS[0] eq 'message';
-			$coderef = sub { @FIELDS };
-		}
-		return $self->SUPER::process_method($klass, $name, $coderef);
-	}
 	
 	# Allow make_sub to accept Exception::Class-like hashrefs.
 	sub make_sub

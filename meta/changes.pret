@@ -10,3 +10,9 @@
 		item "Use namespace::clean instead of namespace::sweep."^^Change;
 	].
 
+`Throwable-Factory 0.000_03 cpan:TOBYINK`
+	issued  2012-12-18;
+	changeset [
+		item "Move some of responsibility for sane FIELDS list to MooX::Struct (require version 0.009)."^^Change;
+	].
+
