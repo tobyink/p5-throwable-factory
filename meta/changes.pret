@@ -16,3 +16,6 @@
 		item "Move some of responsibility for sane FIELDS list to MooX::Struct (require version 0.009)."^^Change;
 	].
 
+`Throwable-Factory 0.001 cpan:TOBYINK`
+	issued  2012-12-19;
+	label   "First official release".
