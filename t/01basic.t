@@ -43,7 +43,7 @@ catch {
 	is_deeply($e->baz, { Hello => 'World' });
 	like("$e", qr{^Test exception});
 	is($e->package, __PACKAGE__);
-	is($e->file, __FILE__);
+	like($e->file, qr{01basic\.t$});
 	ok($e->line);
 };
 
