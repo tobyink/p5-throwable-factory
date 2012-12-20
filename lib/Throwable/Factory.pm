@@ -10,7 +10,7 @@ use Throwable::Error 0.200000 ();
 	package Throwable::Factory;
 	our $AUTHORITY = 'cpan:TOBYINK';
 	our $VERSION   = '0.001';
-
+	
 	use MooX::Struct -retain,
 		Base => [
 			-class   => \'Throwable::Factory::Struct',
@@ -62,7 +62,7 @@ use Throwable::Error 0.200000 ();
 		local $Data::Dumper::Deparse = 0;
 		local $Data::Dumper::Quotekeys = 0;
 		local $Data::Dumper::Sortkeys = 1;
-
+		
 		my $self = shift;
 		my $str  = $self->message . "\n\n";
 		
@@ -138,31 +138,31 @@ Throwable::Factory - lightweight Moo-based exception class factory
 
 =head1 SYNOPSIS
 
-	use Throwable::Factory
-		GeneralException => undef,
-		FileException    => [qw( $filename )],
-		NetworkException => [qw( $remote_addr $remote_port )],
-	;
-	
-	# Just a message...
-	#
-	GeneralException->throw("Something bad happened");
-	
-	# Or use named parameters...
-	#
-	GeneralException->throw(message => "Something awful happened");
+   use Throwable::Factory
+      GeneralException => undef,
+      FileException    => [qw( $filename )],
+      NetworkException => [qw( $remote_addr $remote_port )],
+   ;
+   
+   # Just a message...
+   #
+   GeneralException->throw("Something bad happened");
+   
+   # Or use named parameters...
+   #
+   GeneralException->throw(message => "Something awful happened");
 
-	# The message can be a positional parameter, even while the
-	# rest are named.
-	#
-	FileException->throw(
-		"Can't open file",
-		filename => '/tmp/does-not-exist.txt',
-	);
+   # The message can be a positional parameter, even while the
+   # rest are named.
+   #
+   FileException->throw(
+      "Can't open file",
+      filename => '/tmp/does-not-exist.txt',
+   );
 
-	# Or, they all can be a positional using an arrayref...
-	#
-	NetworkException->throw(["Timed out", "11.22.33.44", 555]);
+   # Or, they all can be a positional using an arrayref...
+   #
+   NetworkException->throw(["Timed out", "11.22.33.44", 555]);
 
 =head1 DESCRIPTION
 
@@ -202,17 +202,17 @@ Additionally, the factory can be called with Exception::Class-like hashrefs
 to describe the exception classes. The following two definitions are
 equivalent:
 
-	# MooX::Struct-style
-	use Throwable::Factory FooBar => [
-		-extends => ['Foo'],
-		qw( foo bar ),
-	];
-	
-	# Exception::Class-style
-	use Throwable::Factory FooBar => {
-		isa    => 'Foo',
-		fields => [qw( foo bar )],
-	};
+   # MooX::Struct-style
+   use Throwable::Factory FooBar => [
+      -extends => ['Foo'],
+      qw( foo bar ),
+   ];
+   
+   # Exception::Class-style
+   use Throwable::Factory FooBar => {
+      isa    => 'Foo',
+      fields => [qw( foo bar )],
+   };
 
 =head1 BUGS
 
