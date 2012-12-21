@@ -25,3 +25,10 @@
 	changeset [
 		item "Don't assume path separator is forward-slash in t/01base.t. Was causing test failures on Windows."^^Bugfix;
 	].
+
+`Throwable-Factory 0.003 cpan:TOBYINK`
+	issued  2012-12-21;
+	label   "100% Devel::Cover coverage!";
+	changeset [
+		item "Add some test cases for different constructor styles."^^Packaging;
+	].
