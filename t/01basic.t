@@ -47,4 +47,50 @@ catch {
 	ok($e->line);
 };
 
-done_testing();
+try {
+	MyException->throw({
+		message => "Test exception 2",
+		foo     => "Hello world",
+	});
+}
+catch {
+	my $e = shift;
+	BAIL_OUT("not a blessed exception: $e") unless blessed $e;
+	is($e->message, 'Test exception 2', 'Test that hashref constructor works.');
+	is($e->foo, 'Hello world');
+};
+
+try {
+	MyException->throw(["Test exception 3", "Hello world"]);
+}
+catch {
+	my $e = shift;
+	BAIL_OUT("not a blessed exception: $e") unless blessed $e;
+	is($e->message, 'Test exception 3', 'Test that arrayref constructor works.');
+	is($e->foo, 'Hello world');
+};
+
+try {
+	MyException->throw(
+		message => "Test exception 4",
+		foo     => "Hello world",
+	);
+}
+catch {
+	my $e = shift;
+	BAIL_OUT("not a blessed exception: $e") unless blessed $e;
+	is($e->message, 'Test exception 4', 'Test that Moose-style constructor works.');
+	is($e->foo, 'Hello world');
+};
+
+try {
+	MyException->throw;
+}
+catch {
+	my $e = shift;
+	BAIL_OUT("not a blessed exception: $e") unless blessed $e;
+	is($e->message, undef, 'Test that emptyconstructor works.');
+	is($e->foo, undef);
+};
+
+done_testing;

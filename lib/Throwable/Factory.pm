@@ -51,7 +51,7 @@ use Throwable::Error 0.200000 ();
 		my $class = shift;
 		return +{} unless @_;
 		unshift @_, 'message' if @_ % 2 and not ref $_[0];
-		$class->SUPER::BUILDARGS(@_) if @_;
+		$class->SUPER::BUILDARGS(@_);
 	}
 	
 	sub TO_STRING

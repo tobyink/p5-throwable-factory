@@ -28,6 +28,11 @@ use Throwable::Factory
 		fields      => [ 'baz' ],
 		description => 'Extended version of Except1',
 	},
+	Except3 => {
+		isa         => 'Except2',
+		fields      => 'bam',
+		description => 'Extended version of Except2',
+	},
 ;
 
 # Throws for unsupported Exception::Class-style options.
@@ -54,6 +59,17 @@ catch {
 	isa_ok $e, Except1;
 	is($e->error, 'Test');
 	is($e->description, 'Extended version of Except1');
+};
+
+try {
+	Except3->throw('Test 3');
+}
+catch {
+	my $e = shift;
+	BAIL_OUT("not a blessed exception: $e") unless blessed $e;
+
+	is($e->error, 'Test 3');
+	is_deeply([$e->FIELDS], [qw/ message foo bar baz bam /]);
 };
 
 done_testing;
