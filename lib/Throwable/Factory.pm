@@ -11,6 +11,8 @@ use Throwable::Error 0.200000 ();
 	our $AUTHORITY = 'cpan:TOBYINK';
 	our $VERSION   = '0.003';
 	
+	our @SHORTCUTS;
+	
 	use MooX::Struct -retain,
 		Base => [
 			-class   => \'Throwable::Factory::Struct',
@@ -25,6 +27,24 @@ use Throwable::Error 0.200000 ();
 		my $class  = shift() . '::Struct';
 		unshift @_, $class;
 		goto \&MooX::Struct::import;
+	}
+	
+	{
+		package Throwable::Taxonomy::Caller;
+		use Moo::Role;
+		push @SHORTCUTS, __PACKAGE__;
+	}
+	
+	{
+		package Throwable::Taxonomy::Environment;
+		use Moo::Role;
+		push @SHORTCUTS, __PACKAGE__;
+	}
+	
+	{
+		package Throwable::Taxonomy::NotImplemented;
+		use Moo::Role;
+		push @SHORTCUTS, __PACKAGE__;
 	}
 	
 	Base;
@@ -94,6 +114,22 @@ use Throwable::Error 0.200000 ();
 	has '+base' => (
 		default => sub { Throwable::Factory::Base },
 	);
+	
+	sub process_meta
+	{
+		my ($self, $klass, $name, $value) = @_;
+		
+		if ($name !~ /^-(isa|extends|with|class)$/) {
+			my $k = substr $name, 1;
+			my @matches = grep /::$k$/i, @Throwable::Factory::SHORTCUTS;
+			croak "Shortcut '$name' has too many matches: @matches" if @matches > 1;
+			croak "Shortcut '$name' has no matches" if @matches < 1;
+			$name  = '-with';
+			$value = \@matches;
+		}
+		
+		$self->SUPER::process_meta($klass, $name, $value);
+	}
 	
 	# Allow make_sub to accept Exception::Class-like hashrefs.
 	sub make_sub
@@ -213,6 +249,67 @@ equivalent:
       isa    => 'Foo',
       fields => [qw( foo bar )],
    };
+
+=head2 Exception Taxonomy
+
+It can be useful to divide your exceptions into broad categories to allow
+your caller to catch great swathes of exceptions easily, including new
+exceptions you add in future versions of your module.
+
+Throwable::Factory includes four exception categories that you may use
+for this purpose. These are implemented as role packages with no associated
+methods, so can be tested for using the C<DOES> method (see L<UNIVERSAL>).
+
+=over
+
+=item *
+
+Throwable::Taxonomy::Caller - the caller passed bad or unexpected
+parameters.
+
+=item *
+
+Throwable::Taxonomy::Environment - a problem was found in the software's
+operating environment; e.g. network connection unavailable, lack of
+disk space.
+
+=item *
+
+Throwable::Taxonomy::NotImplemented - the caller requested a feature that
+is not currently implemented, but may be in the future.
+
+=back
+
+It is easy to apply these roles to your exception classes:
+
+   use Throwable::Factory
+      ErrTooBig   => [qw( $maximum! -notimplemented )],
+      ErrTooSmall => [qw( $minimum! -notimplemented )],
+   ;
+   use Try::Tiny;
+   
+   sub calculation
+   {
+      my $input = shift;
+      if ($input > 12) {
+         ErrToBig->throw(
+            "Inputs over 12 are not currently supported",
+            maximum => 12,
+         );
+      }
+      ...;
+   }
+   
+   try {
+      calculation(13);
+   }
+   catch {
+      warn $_ if $_->DOES('Throwable::Taxonomy::NotImplemented');
+   };
+
+The C<< -notimplemented >> shortcut expands to
+C<< -with => ['Throwable::Taxonomy::NotImplemented'] >>. Similarly
+C<< -caller >> and C<< -environment >> shortcuts exist.
 
 =head1 BUGS
 
