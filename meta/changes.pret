@@ -32,3 +32,10 @@
 	changeset [
 		item "Add some test cases for different constructor styles."^^Packaging;
 	].
+
+`Throwable-Factory 0.004 cpan:TOBYINK`
+	issued  2012-12-26;
+	label   "Boxing Day";
+	changeset [
+		item "Exception taxonomy."^^Addition;
+	].
