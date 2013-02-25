@@ -292,7 +292,7 @@ It is easy to apply these roles to your exception classes:
    {
       my $input = shift;
       if ($input > 12) {
-         ErrToBig->throw(
+         ErrTooBig->throw(
             "Inputs over 12 are not currently supported",
             maximum => 12,
          );
