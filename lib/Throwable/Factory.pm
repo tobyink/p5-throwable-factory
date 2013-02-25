@@ -256,7 +256,7 @@ It can be useful to divide your exceptions into broad categories to allow
 your caller to catch great swathes of exceptions easily, including new
 exceptions you add in future versions of your module.
 
-Throwable::Factory includes four exception categories that you may use
+Throwable::Factory includes three exception categories that you may use
 for this purpose. These are implemented as role packages with no associated
 methods, so can be tested for using the C<DOES> method (see L<UNIVERSAL>).
 
