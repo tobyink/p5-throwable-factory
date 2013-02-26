@@ -286,7 +286,7 @@ It is easy to apply these roles to your exception classes:
       ErrTooBig   => [qw( $maximum! -notimplemented )],
       ErrTooSmall => [qw( $minimum! -notimplemented )],
    ;
-   use Try::Tiny;
+   use Try::Tiny::ByClass;
    
    sub calculation
    {
@@ -303,9 +303,9 @@ It is easy to apply these roles to your exception classes:
    try {
       calculation(13);
    }
-   catch {
-      warn $_ if $_->DOES('Throwable::Taxonomy::NotImplemented');
-   };
+   catch_case [
+      'Throwable::Taxonomy::NotImplemented' => sub { warn $_[0] },
+   ];
 
 The C<< -notimplemented >> shortcut expands to
 C<< -with => ['Throwable::Taxonomy::NotImplemented'] >>. Similarly
@@ -324,7 +324,8 @@ the L<Throwable> and L<StackTrace::Auto> roles.
 This factory is inspired by L<Exception::Class>, and for simple uses should
 be roughly compatible.
 
-Use L<Try::Tiny> or L<TryCatch> if you need a try/catch mechanism.
+Use L<Try::Tiny>, L<Try::Tiny::ByClass> or L<TryCatch> if you need a
+try/catch mechanism.
 
 =head1 AUTHOR
 
