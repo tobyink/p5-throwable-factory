@@ -11,5 +11,6 @@
 	test_requires     p`Test::More 0.88`;
 	test_requires     p`Test::Requires 0`;
 	test_requires     p`Try::Tiny 0`;
+	recommends        p`Try::Tiny::ByClass 0`;
 .
 
