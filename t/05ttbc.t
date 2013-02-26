@@ -33,7 +33,7 @@ try {
 	A->throw;
 }
 catch_case [
-	'Throwable::Taxonomy::Caller' => sub { $fail--; pass() },
+	"Throwable::Taxonomy::Caller" => sub { $fail--; pass() },
 ],
 finally {
 	fail() if $fail;
@@ -44,7 +44,7 @@ try {
 	B->throw;
 }
 catch_case [
-	'Throwable::Taxonomy::Environment' => sub { $fail--; pass() },
+	"Throwable::Taxonomy::Environment" => sub { $fail--; pass() },
 ],
 finally {
 	fail() if $fail;
@@ -55,7 +55,7 @@ try {
 	C->throw;
 }
 catch_case [
-	'Throwable::Taxonomy::NotImplemented' => sub { $fail--; pass() },
+	"Throwable::Taxonomy::NotImplemented" => sub { $fail--; pass() },
 ],
 finally {
 	fail() if $fail;

@@ -304,7 +304,9 @@ It is easy to apply these roles to your exception classes:
       calculation(13);
    }
    catch_case [
-      'Throwable::Taxonomy::NotImplemented' => sub { warn $_[0] },
+      +ErrTooBig                            => sub { warn "Too big!" },
+      +ErrTooSmall                          => sub { warn "Too small!" },
+      "Throwable::Taxonomy::NotImplemented" => sub { warn $_ },
    ];
 
 The C<< -notimplemented >> shortcut expands to

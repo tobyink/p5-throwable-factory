@@ -46,4 +46,5 @@
 		item "Fix typo in code sample."^^Documentation;
 		item "Exception taxonomy documentation incorrectly stated that there were four built-in categories, when only three were listed. Fixed."^^Documentation;
 		item "Document taxonomy test case."^^Documentation;
+		item "Give example of usage with Try::Tiny::ByClass."^^Documentation;
 	].
