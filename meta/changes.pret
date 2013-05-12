@@ -48,3 +48,14 @@
 		item "Document taxonomy test case."^^Documentation;
 		item "Give example of usage with Try::Tiny::ByClass."^^Documentation;
 	].
+
+`Throwable-Factory 0.006 cpan:TOBYINK`
+	issued  2013-05-12;
+	changeset [
+		item [
+			a dcs:Documentation;
+			label "Add CAVEATS section to documentation.";
+			seealso <https://rt.cpan.org/Ticket/Display.html?id=84277>;
+			dcs:thanks cpan:PERIGRIN;
+		];
+	].
