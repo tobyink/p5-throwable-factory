@@ -313,6 +313,11 @@ The C<< -notimplemented >> shortcut expands to
 C<< -with => ['Throwable::Taxonomy::NotImplemented'] >>. Similarly
 C<< -caller >> and C<< -environment >> shortcuts exist.
 
+=head1 CAVEATS
+
+Exceptions built by this factory inherit from L<MooX::Struct>; see the
+B<CAVEATS> section from the MooX::Struct documentation.
+
 =head1 BUGS
 
 Please report any bugs to
