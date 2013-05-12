@@ -313,6 +313,9 @@ The C<< -notimplemented >> shortcut expands to
 C<< -with => ['Throwable::Taxonomy::NotImplemented'] >>. Similarly
 C<< -caller >> and C<< -environment >> shortcuts exist.
 
+(Note the plus signs in the C<catch_case> above; this ensures C<ErrTooBig>
+and C<ErrToString> are not auto-quoted by the fat comma.)
+
 =head1 CAVEATS
 
 Exceptions built by this factory inherit from L<MooX::Struct>; see the
