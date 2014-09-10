@@ -1,0 +1,12 @@
+@prefix deps:  <http://ontologi.es/doap-deps#> .
+
+<http://purl.org/NET/cpan-uri/dist/Throwable-Factory/project>
+	deps:runtime-recommendation      [ deps:on "Try::Tiny::ByClass 0"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Moo 1.000006"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "MooX::Struct 0.009"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "Throwable::Error 0.200000"^^deps:CpanId ];
+	deps:runtime-requirement         [ deps:on "namespace::clean 0"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "Test::More 0.88"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "Test::Requires 0"^^deps:CpanId ];
+	deps:test-requirement            [ deps:on "Try::Tiny 0"^^deps:CpanId ].
+
