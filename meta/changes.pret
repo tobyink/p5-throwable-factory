@@ -59,3 +59,10 @@
 			dcs:thanks cpan:PERIGRIN;
 		];
 	].
+
+`Throwable-Factory 0.007 cpan:TOBYINK`
+	issued    2014-09-10;
+	changeset [
+		item "Switch to Dist::Inkt."^^Packaging;
+	].
+
